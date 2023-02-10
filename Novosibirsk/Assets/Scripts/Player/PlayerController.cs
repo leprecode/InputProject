@@ -2,16 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPauseHandler
 {
     [SerializeField] private float _movementSpeed = 2f;
     [SerializeField] private float _maxXPosition = 6f;
     [SerializeField] private float _minXPosition = -6f;
 
+    private bool _isPaused;
 
+    public void SetPause(bool isPaused)
+    {
+        _isPaused = isPaused;
+        Debug.Log($"Player was paused: {_isPaused}");
+    }
 
     private void Update()
     {
+        if (_isPaused)
+            return;
+
         Move(Input.GetAxisRaw("Horizontal"));
         StartCoroutine(DistanceCovered());
     }
