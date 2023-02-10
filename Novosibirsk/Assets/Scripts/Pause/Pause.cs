@@ -18,7 +18,7 @@ public class Pause
 
     public bool isPaused { get; private set; }
 
-    public void OnDestroy()
+    ~Pause()
     { 
         UnsubscribeToView();
     }

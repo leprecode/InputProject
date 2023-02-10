@@ -5,16 +5,14 @@ namespace Assets.Scripts.Infrastructure
     public class ProjectContext : MonoBehaviour
     {
         [SerializeField] private PlayerController playerController;
+        [SerializeField] private InputService _inputService;
+        [SerializeField] private InputServiceView _inputServiceView;
         private Pause _pause;
 
-        private void Awake()
+        private void Start()
         {
             _pause = new Pause(playerController);
-        }
-
-        private void OnDestroy()
-        {
-            _pause.OnDestroy();
+            _inputServiceView.Construct(_inputService);
         }
     }
 }
