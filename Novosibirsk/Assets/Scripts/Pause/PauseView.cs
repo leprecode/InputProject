@@ -7,14 +7,14 @@ public class PauseView : MonoBehaviour
 
     [SerializeField] private GameObject _pauseMenu;
 
-    private void Start()
-    {
-        _pauseMenu.SetActive(false);
-    }
-
     public void OnPauseButtonClick()
     {
         OnPause?.Invoke();
         _pauseMenu.SetActive(!_pauseMenu.activeSelf);
+    }
+
+    private void Start()
+    {
+        _pauseMenu.SetActive(false);
     }
 }

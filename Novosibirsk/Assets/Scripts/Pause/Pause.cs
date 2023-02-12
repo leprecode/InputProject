@@ -7,6 +7,7 @@ using UnityEngine;
 public class Pause
 {
     [SerializeField] private List<IPauseHandler> _handlers;
+    public bool isPaused { get; private set; }
 
     public Pause(params IPauseHandler[] handlers)
     {
@@ -16,23 +17,9 @@ public class Pause
         SubscribeToView();
     }
 
-    public bool isPaused { get; private set; }
-
     ~Pause()
     { 
         UnsubscribeToView();
-    }
-
-    private void SubscribeToView()
-    {
-        Debug.Log("Subscribe!");
-        PauseView.OnPause += PauseGame;
-    }
-
-    private void UnsubscribeToView()
-    {
-        Debug.Log("Unsubscribe!");
-        PauseView.OnPause -= PauseGame;
     }
 
     public void RegisterSeveral(params IPauseHandler[] handlers)
@@ -60,8 +47,18 @@ public class Pause
 
         if (isPaused)
             Time.timeScale = 0f;
-        else 
+        else
             Time.timeScale = 1f;
+    }
+
+    private void SubscribeToView()
+    {
+        PauseView.OnPause += PauseGame;
+    }
+
+    private void UnsubscribeToView()
+    {
+        PauseView.OnPause -= PauseGame;
     }
 
     private void UpdateHandlers(bool isPaused)

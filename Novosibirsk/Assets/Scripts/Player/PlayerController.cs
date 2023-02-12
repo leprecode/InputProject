@@ -14,25 +14,19 @@ public class PlayerController : MonoBehaviour, IPauseHandler
 
     private bool _isPaused;
 
+    public void SetPause(bool isPaused)
+    {
+        _isPaused = isPaused;
+    }
+
     private void Start()
     {
         _maxXPosition = transform.position.x + _maxXPosition;
         _minXPosition = transform.position.x + _minXPosition;
     }
 
-    public void SetPause(bool isPaused)
-    {
-        _isPaused = isPaused;
-        Debug.Log($"Player was paused: {_isPaused}");
-    }
-
     private void OnEnable() => InputService.OnNewInputScheme += ChangeSubscribeOnInputScheme;
     private void OnDisable() => InputService.OnNewInputScheme -= ChangeSubscribeOnInputScheme;
-
-    private void Update()
-    {
-        StartCoroutine(DistanceCovered());
-    }
 
     private void ChangeSubscribeOnInputScheme(InputScheme previousScheme, InputScheme newScheme)
     {
@@ -58,7 +52,7 @@ public class PlayerController : MonoBehaviour, IPauseHandler
         if (previousScheme == null)
             return;
 
-        if (previousScheme is TouchInput || previousScheme is KeyboardInput || previousScheme is MouseInput)
+        if (previousScheme is KeyboardInput)
             previousScheme.OnNewInputValue -= Move;
         else if (previousScheme is SwipeInput)
             previousScheme.OnNewInputValue -= DiscreteMove;
@@ -78,8 +72,6 @@ public class PlayerController : MonoBehaviour, IPauseHandler
         Vector3 targetPos = new Vector3(clampedNewXPosition, transform.position.y, transform.position.z);
 
         transform.position = Vector3.Lerp(transform.position, targetPos, Time.deltaTime * _movementSpeed);
-
-        Debug.Log($"MOve onXValue: {xValue}");
     }
 
     private void MoveToPosition(float xPosition)
@@ -97,11 +89,8 @@ public class PlayerController : MonoBehaviour, IPauseHandler
     private float CalculateMoveDirection(float xPosition)
     {
         float distance = Mathf.Round(xPosition - transform.position.x);
-        float newXValue = 0;
 
-        newXValue = NormilizeDirection(distance);
-
-        return newXValue;
+        return NormilizeDirection(distance);
     }
 
     private float NormilizeDirection(float distance)
@@ -125,22 +114,6 @@ public class PlayerController : MonoBehaviour, IPauseHandler
         {
             transform.position =
                 new Vector3(newPlayerXPosition, transform.position.y, transform.position.z);
-
-        }
-    }
-
-    //TODO: Delete this
-    private Vector3 initiailPos;
-    private bool launched = false;
-    private IEnumerator DistanceCovered()
-    {
-        if (!launched)
-        {
-            launched = true;
-            initiailPos = transform.position;
-            yield return new WaitForSeconds(1);
-            Debug.Log($"Covered distance in one second: {Mathf.Abs(initiailPos.x - transform.position.x)}");
-            launched = false;
         }
     }
 }
